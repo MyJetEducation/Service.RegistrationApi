@@ -11,7 +11,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.0" />
     <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.4" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.5" />
     <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.2" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.5" />
     <PackageReference Include="MyJetEducation.Service.UserInfo.Crud.Client" Version="1.0.11" />
