@@ -1,0 +1,32 @@
+﻿using Autofac;
+using Microsoft.Extensions.Logging;
+using Service.Authorization.Domain;
+using Service.Authorization.Domain.Models;
+using Service.PasswordRecovery.Client;
+using Service.Registration.Client;
+using Service.UserInfo.Crud.Client;
+using Service.UserInfo.Crud.Grpc;
+
+namespace Service.RegistrationApi.Modules
+{
+	public class ServiceModule : Module
+	{
+		protected override void Load(ContainerBuilder builder)
+		{
+			builder.RegisterUserInfoCrudClient(Program.Settings.UserInfoCrudServiceUrl);
+			builder.RegisterRegistrationClient(Program.Settings.RegistrationServiceUrl);
+			builder.RegisterPasswordRecoveryClient(Program.Settings.PasswordRecoveryServiceUrl);
+
+			builder.Register(context =>
+				new TokenService(
+					context.Resolve<IUserInfoService>(),
+					Program.Settings.JwtAudience,
+					Program.JwtSecret,
+					Program.Settings.JwtTokenExpireMinutes,
+					Program.Settings.RefreshTokenExpireMinutes,
+					context.Resolve<ILogger<TokenService>>()))
+				.As<ITokenService>()
+				.SingleInstance();
+		}
+	}
+}
