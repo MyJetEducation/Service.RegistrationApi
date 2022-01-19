@@ -8,19 +8,35 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
+using NSwag.AspNetCore;
 
 namespace Service.RegistrationApi
 {
 	public static class StartupUtils
 	{
+		private const string DocumentName = "register";
+		private const string ApiName = "RegistrationApi";
+
+		public static void SetupSwagger(this IApplicationBuilder app)
+		{
+			app.UseOpenApi(settings => settings.Path = "/api/v1/{documentName}/swagger/swagger.json");
+			app.UseSwaggerUi3(settings =>
+			{
+				settings.Path = $"/api/v1/{DocumentName}/swagger";
+				settings.SwaggerRoutes.Add(new SwaggerUi3Route("v1", $"/api/v1/{DocumentName}/swagger/swagger.json"));
+				settings.DocumentTitle = $"{ApiName} Swagger";
+			});
+		}
+
 		/// <summary>
 		///     Setup swagger ui ba
 		/// </summary>
 		public static void SetupSwaggerDocumentation(this IServiceCollection services) => services.AddSwaggerDocument(o =>
 		{
-			o.Title = "MyJetEducation RegistrationApi";
+			o.Title = $"MyJetEducation {ApiName}";
 			o.GenerateEnumMappingDescription = true;
-			o.DocumentName = "register";
+			o.DocumentName = DocumentName;
+			o.Version = "v1";
 			o.AddSecurity("Bearer", Enumerable.Empty<string>(),
 				new OpenApiSecurityScheme
 				{
