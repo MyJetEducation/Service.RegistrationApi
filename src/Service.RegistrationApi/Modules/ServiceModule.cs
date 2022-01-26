@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
-using Service.Authorization.Domain;
-using Service.Authorization.Domain.Models;
+using Service.Authorization.Client.Services;
 using Service.PasswordRecovery.Client;
 using Service.Registration.Client;
 using Service.UserInfo.Crud.Client;

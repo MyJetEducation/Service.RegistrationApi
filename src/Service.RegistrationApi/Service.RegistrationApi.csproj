@@ -7,18 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.1" />
-    <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.4" />
-    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.2" />
-    <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.5" />
-    <PackageReference Include="MyJetEducation.Service.UserInfo.Crud.Client" Version="1.0.11" />
-    <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.6" />
-    <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.0.152" />
+    <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.6" />
+    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.3" />
+    <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.6" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.5" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.15" />
     <PackageReference Include="SimpleTrading.ClientApi" Version="1.0.18" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
   </ItemGroup>

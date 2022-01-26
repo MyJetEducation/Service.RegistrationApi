@@ -8,8 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service;
 using MySettingsReader;
+using Service.Core.Client.Extensions;
 using Service.RegistrationApi.Settings;
-using Service.Core.Domain.Extensions;
 
 namespace Service.RegistrationApi
 {

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Service.Core.Domain.Models.Constants;
+using Service.Core.Client.Constants;
 
 namespace Service.RegistrationApi.Models
 {
