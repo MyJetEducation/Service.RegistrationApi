@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.6" />
-    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.3" />
+    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.4" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.6" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.5" />
