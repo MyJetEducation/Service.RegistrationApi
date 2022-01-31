@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,13 +56,16 @@ namespace Service.RegistrationApi.Controllers
 			int? validationResult = _loginRequestValidator.ValidateRegisterRequest(request);
 			if (validationResult != null)
 			{
-				WaitFakeRequest();
+				await WaitFakeRequest();
 				return StatusResponse.Error(validationResult.Value);
 			}
 
 			Guid? userId = await GetUserIdAsync(request.UserName);
 			if (userId != null)
+			{
+				await WaitFakeRequest();
 				return StatusResponse.Error(RegistrationResponseCode.UserAlreadyExists);
+			}
 
 			CommonGrpcResponse response = await _registrationService.RegistrationAsync(new RegistrationGrpcRequest
 			{
@@ -84,7 +86,10 @@ namespace Service.RegistrationApi.Controllers
 
 			string userName = response?.Email;
 			if (userName.IsNullOrEmpty())
+			{
+				await WaitFakeRequest();
 				return StatusResponse.Error();
+			}
 
 			TokenInfo tokenInfo = await _tokenService.GenerateTokensAsync(userName, HttpContext.GetIp());
 			return tokenInfo != null
@@ -96,6 +101,13 @@ namespace Service.RegistrationApi.Controllers
 		[SwaggerResponse(HttpStatusCode.OK, typeof (StatusResponse), Description = "Ok")]
 		public async ValueTask<IActionResult> PasswordRecoveryAsync([FromBody, Required] string email)
 		{
+			Guid? userId = await GetUserIdAsync(email);
+			if (userId == null)
+			{
+				await WaitFakeRequest();
+				return StatusResponse.Ok();
+			}
+
 			CommonGrpcResponse response = await _passwordRecoveryService.Recovery(new RecoveryPasswordGrpcRequest {Email = email});
 
 			return Result(response?.IsSuccess);
@@ -111,7 +123,7 @@ namespace Service.RegistrationApi.Controllers
 			int? validationResult = _loginRequestValidator.ValidatePassword(password);
 			if (validationResult != null)
 			{
-				WaitFakeRequest();
+				await WaitFakeRequest();
 				return StatusResponse.Error(validationResult.Value);
 			}
 
@@ -120,7 +132,12 @@ namespace Service.RegistrationApi.Controllers
 			return Result(response?.IsSuccess);
 		}
 
-		private static void WaitFakeRequest() => Thread.Sleep(200);
+		private static async Task WaitFakeRequest()
+		{
+			Func<int> timeoutSettings = Program.ReloadedSettings(model => model.FakeRequestTimeoutMilliseconds);
+
+			await Task.Delay(timeoutSettings.Invoke());
+		}
 
 		private static IActionResult Result(bool? isSuccess) => isSuccess == true ? StatusResponse.Ok() : StatusResponse.Error();
 

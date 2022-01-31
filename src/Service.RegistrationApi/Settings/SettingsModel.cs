@@ -31,5 +31,8 @@ namespace Service.RegistrationApi.Settings
 
 		[YamlProperty("RegistrationApi.PasswordRecoveryServiceUrl")]
 		public string PasswordRecoveryServiceUrl { get; set; }
+
+		[YamlProperty("RegistrationApi.FakeRequestTimeoutMilliseconds")]
+		public int FakeRequestTimeoutMilliseconds { get; set; }
 	}
 }
