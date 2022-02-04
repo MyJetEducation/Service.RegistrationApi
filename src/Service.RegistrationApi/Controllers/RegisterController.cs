@@ -2,51 +2,37 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using Service.Authorization.Client.Models;
 using Service.Authorization.Client.Services;
 using Service.Core.Client.Extensions;
 using Service.Core.Client.Models;
-using Service.PasswordRecovery.Grpc;
-using Service.PasswordRecovery.Grpc.Models;
 using Service.Registration.Grpc;
 using Service.Registration.Grpc.Models;
 using Service.RegistrationApi.Constants;
 using Service.RegistrationApi.Models;
 using Service.RegistrationApi.Services;
 using Service.UserInfo.Crud.Grpc;
-using Service.UserInfo.Crud.Grpc.Models;
 using SimpleTrading.ClientApi.Utils;
 
 namespace Service.RegistrationApi.Controllers
 {
-	[ApiController]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	[OpenApiTag("Register", Description = "user registration")]
-	[Route("/api/v1/register")]
-	public class RegisterController : ControllerBase
+	public class RegisterController : BaseController
 	{
-		private readonly IPasswordRecoveryService _passwordRecoveryService;
 		private readonly IRegistrationService _registrationService;
 		private readonly ITokenService _tokenService;
 		private readonly ILoginRequestValidator _loginRequestValidator;
-		private readonly IUserInfoService _userInfoService;
 
-		public RegisterController(
-			IPasswordRecoveryService passwordRecoveryService,
-			IRegistrationService registrationService,
+		public RegisterController(IRegistrationService registrationService,
 			ITokenService tokenService,
 			ILoginRequestValidator loginRequestValidator,
-			IUserInfoService userInfoService)
+			IUserInfoService userInfoService) : base(userInfoService)
 		{
-			_passwordRecoveryService = passwordRecoveryService;
 			_registrationService = registrationService;
 			_tokenService = tokenService;
 			_loginRequestValidator = loginRequestValidator;
-			_userInfoService = userInfoService;
 		}
 
 		[HttpPost("create")]
@@ -74,6 +60,8 @@ namespace Service.RegistrationApi.Controllers
 				FullName = request.FullName
 			});
 
+			await WaitFakeRequest();
+
 			return Result(response?.IsSuccess);
 		}
 
@@ -95,60 +83,6 @@ namespace Service.RegistrationApi.Controllers
 			return tokenInfo != null
 				? DataResponse<TokenInfo>.Ok(tokenInfo)
 				: Unauthorized();
-		}
-
-		[HttpPost("recovery")]
-		[SwaggerResponse(HttpStatusCode.OK, typeof (StatusResponse), Description = "Ok")]
-		public async ValueTask<IActionResult> PasswordRecoveryAsync([FromBody, Required] string email)
-		{
-			Guid? userId = await GetUserIdAsync(email);
-			if (userId == null)
-			{
-				await WaitFakeRequest();
-				return StatusResponse.Ok();
-			}
-
-			CommonGrpcResponse response = await _passwordRecoveryService.Recovery(new RecoveryPasswordGrpcRequest {Email = email});
-
-			return Result(response?.IsSuccess);
-		}
-
-		[HttpPost("change")]
-		[SwaggerResponse(HttpStatusCode.OK, typeof (StatusResponse), Description = "Ok")]
-		public async ValueTask<IActionResult> ChangePasswordAsync([FromBody, Required] ChangePasswordRequest request)
-		{
-			string hash = request.Hash;
-			string password = request.Password;
-
-			int? validationResult = _loginRequestValidator.ValidatePassword(password);
-			if (validationResult != null)
-			{
-				await WaitFakeRequest();
-				return StatusResponse.Error(validationResult.Value);
-			}
-
-			CommonGrpcResponse response = await _passwordRecoveryService.Change(new ChangePasswordGrpcRequest {Password = password, Hash = hash});
-
-			return Result(response?.IsSuccess);
-		}
-
-		private static async Task WaitFakeRequest()
-		{
-			Func<int> timeoutSettings = Program.ReloadedSettings(model => model.FakeRequestTimeoutMilliseconds);
-
-			await Task.Delay(timeoutSettings.Invoke());
-		}
-
-		private static IActionResult Result(bool? isSuccess) => isSuccess == true ? StatusResponse.Ok() : StatusResponse.Error();
-
-		private async ValueTask<Guid?> GetUserIdAsync(string userName)
-		{
-			UserInfoResponse userInfoResponse = await _userInfoService.GetUserInfoByLoginAsync(new UserInfoAuthRequest
-			{
-				UserName = userName
-			});
-
-			return userInfoResponse?.UserInfo?.UserId;
 		}
 	}
 }
