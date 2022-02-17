@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Service.RegistrationApi.Services;
 
 namespace Service.RegistrationApi.Modules
 {
@@ -8,7 +7,6 @@ namespace Service.RegistrationApi.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterInstance(Program.Settings).AsSelf().SingleInstance();
-	        builder.RegisterType<LoginRequestValidator>().AsImplementedInterfaces().SingleInstance();
         }
     }
 }

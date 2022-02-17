@@ -12,7 +12,6 @@ using Service.Registration.Grpc;
 using Service.Registration.Grpc.Models;
 using Service.RegistrationApi.Constants;
 using Service.RegistrationApi.Models;
-using Service.RegistrationApi.Services;
 using Service.UserInfo.Crud.Grpc;
 using SimpleTrading.ClientApi.Utils;
 
@@ -23,23 +22,20 @@ namespace Service.RegistrationApi.Controllers
 	{
 		private readonly IRegistrationService _registrationService;
 		private readonly ITokenService _tokenService;
-		private readonly ILoginRequestValidator _loginRequestValidator;
 
 		public RegisterController(IRegistrationService registrationService,
 			ITokenService tokenService,
-			ILoginRequestValidator loginRequestValidator,
 			IUserInfoService userInfoService) : base(userInfoService)
 		{
 			_registrationService = registrationService;
 			_tokenService = tokenService;
-			_loginRequestValidator = loginRequestValidator;
 		}
 
 		[HttpPost("create")]
 		[SwaggerResponse(HttpStatusCode.OK, typeof (StatusResponse), Description = "Ok")]
 		public async ValueTask<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
 		{
-			int? validationResult = _loginRequestValidator.ValidateRegisterRequest(request);
+			int? validationResult = ValidateRegisterRequest(request);
 			if (validationResult != null)
 			{
 				await WaitFakeRequest();
@@ -83,6 +79,20 @@ namespace Service.RegistrationApi.Controllers
 			return tokenInfo != null
 				? DataResponse<TokenInfo>.Ok(tokenInfo)
 				: Unauthorized();
+		}
+
+		private static int? ValidateRegisterRequest(RegisterRequest request)
+		{
+			if (!UserDataRequestValidator.ValidateLogin(request.UserName))
+				return RegistrationResponseCode.NotValidEmail;
+
+			if (!UserDataRequestValidator.ValidatePassword(request.Password))
+				return RegistrationResponseCode.NotValidPassword;
+
+			if (!UserDataRequestValidator.ValidateFullName(request.FullName))
+				return RegistrationResponseCode.NotValidFullName;
+
+			return null;
 		}
 	}
 }
