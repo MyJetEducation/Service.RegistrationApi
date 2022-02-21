@@ -54,7 +54,8 @@ namespace Service.RegistrationApi.Controllers
 			{
 				UserName = request.UserName,
 				Password = request.Password,
-				FullName = request.FullName
+				FirstName = request.FirstName,
+				LastName = request.LastName
 			}));
 
 			await WaitFakeRequest();
@@ -93,7 +94,7 @@ namespace Service.RegistrationApi.Controllers
 			if (!UserDataRequestValidator.ValidatePassword(request.Password))
 				return RegistrationResponseCode.NotValidPassword;
 
-			if (!UserDataRequestValidator.ValidateFullName(request.FullName))
+			if (!UserDataRequestValidator.ValidateName(request.FirstName) || !UserDataRequestValidator.ValidateName(request.LastName))
 				return RegistrationResponseCode.NotValidFullName;
 
 			return null;
