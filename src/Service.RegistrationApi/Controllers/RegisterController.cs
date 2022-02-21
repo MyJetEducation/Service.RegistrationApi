@@ -8,6 +8,7 @@ using Service.Authorization.Client.Models;
 using Service.Authorization.Client.Services;
 using Service.Core.Client.Extensions;
 using Service.Core.Client.Models;
+using Service.Grpc;
 using Service.Registration.Grpc;
 using Service.Registration.Grpc.Models;
 using Service.RegistrationApi.Constants;
@@ -20,10 +21,10 @@ namespace Service.RegistrationApi.Controllers
 	[OpenApiTag("Register", Description = "user registration")]
 	public class RegisterController : BaseController
 	{
-		private readonly IRegistrationService _registrationService;
+		private readonly IGrpcServiceProxy<IRegistrationService> _registrationService;
 		private readonly ITokenService _tokenService;
 
-		public RegisterController(IRegistrationService registrationService,
+		public RegisterController(IGrpcServiceProxy<IRegistrationService> registrationService,
 			ITokenService tokenService,
 			IUserInfoService userInfoService) : base(userInfoService)
 		{
@@ -49,12 +50,12 @@ namespace Service.RegistrationApi.Controllers
 				return StatusResponse.Error(RegistrationResponseCode.UserAlreadyExists);
 			}
 
-			CommonGrpcResponse response = await _registrationService.RegistrationAsync(new RegistrationGrpcRequest
+			CommonGrpcResponse response = await _registrationService.TryCall(service => service.RegistrationAsync(new RegistrationGrpcRequest
 			{
 				UserName = request.UserName,
 				Password = request.Password,
 				FullName = request.FullName
-			});
+			}));
 
 			await WaitFakeRequest();
 
@@ -66,7 +67,10 @@ namespace Service.RegistrationApi.Controllers
 		[SwaggerResponse(HttpStatusCode.Unauthorized, null, Description = "Unauthorized")]
 		public async ValueTask<IActionResult> ConfirmRegisterAsync([FromBody, Required] string hash)
 		{
-			ConfirmRegistrationGrpcResponse response = await _registrationService.ConfirmRegistrationAsync(new ConfirmRegistrationGrpcRequest {Hash = hash});
+			ConfirmRegistrationGrpcResponse response = await _registrationService.TryCall(service => service.ConfirmRegistrationAsync(new ConfirmRegistrationGrpcRequest
+			{
+				Hash = hash
+			}));
 
 			string userName = response?.Email;
 			if (userName.IsNullOrEmpty())

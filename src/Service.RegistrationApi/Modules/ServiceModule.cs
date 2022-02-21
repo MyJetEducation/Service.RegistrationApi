@@ -13,8 +13,9 @@ namespace Service.RegistrationApi.Modules
 		protected override void Load(ContainerBuilder builder)
 		{
 			builder.RegisterUserInfoCrudClient(Program.Settings.UserInfoCrudServiceUrl);
-			builder.RegisterRegistrationClient(Program.Settings.RegistrationServiceUrl);
-			builder.RegisterPasswordRecoveryClient(Program.Settings.PasswordRecoveryServiceUrl);
+			
+			builder.RegisterRegistrationClient(Program.Settings.RegistrationServiceUrl, Program.LogFactory.CreateLogger(typeof(RegistrationClientFactory)));
+			builder.RegisterPasswordRecoveryClient(Program.Settings.PasswordRecoveryServiceUrl, Program.LogFactory.CreateLogger(typeof(PasswordRecoveryClientFactory)));
 
 			builder.Register(context =>
 				new TokenService(

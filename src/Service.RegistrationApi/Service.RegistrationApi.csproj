@@ -10,8 +10,8 @@
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
     <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.10" />
-    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.6" />
-    <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.9" />
+    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.7" />
+    <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.10" />
     <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.29" />
     <PackageReference Include="MyJetEducation.Service.UserInfo.Crud.Client" Version="1.0.14" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
@@ -20,6 +20,7 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
     <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.7" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
+    <PackageReference Include="MyJetEducation.Service.Grpc" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>

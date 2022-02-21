@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using Service.Authorization.Client.Services;
 using Service.Core.Client.Models;
+using Service.Grpc;
 using Service.PasswordRecovery.Grpc;
 using Service.PasswordRecovery.Grpc.Models;
 using Service.RegistrationApi.Constants;
@@ -17,10 +18,10 @@ namespace Service.RegistrationApi.Controllers
 	[OpenApiTag("Recovery", Description = "user password recovery")]
 	public class RecoveryController : BaseController
 	{
-		private readonly IPasswordRecoveryService _passwordRecoveryService;
+		private readonly IGrpcServiceProxy<IPasswordRecoveryService> _passwordRecoveryService;
 
 		public RecoveryController(
-			IPasswordRecoveryService passwordRecoveryService,
+			IGrpcServiceProxy<IPasswordRecoveryService> passwordRecoveryService,
 			IUserInfoService userInfoService) : base(userInfoService) =>
 				_passwordRecoveryService = passwordRecoveryService;
 
@@ -35,7 +36,10 @@ namespace Service.RegistrationApi.Controllers
 				return StatusResponse.Ok();
 			}
 
-			CommonGrpcResponse response = await _passwordRecoveryService.Recovery(new RecoveryPasswordGrpcRequest {Email = email});
+			CommonGrpcResponse response = await _passwordRecoveryService.TryCall(service => service.Recovery(new RecoveryPasswordGrpcRequest
+			{
+				Email = email
+			}));
 
 			await WaitFakeRequest();
 
@@ -54,7 +58,11 @@ namespace Service.RegistrationApi.Controllers
 				return StatusResponse.Error(RegistrationResponseCode.NotValidPassword);
 			}
 
-			CommonGrpcResponse response = await _passwordRecoveryService.Change(new ChangePasswordGrpcRequest {Password = password, Hash = request.Hash});
+			CommonGrpcResponse response = await _passwordRecoveryService.TryCall(service => service.Change(new ChangePasswordGrpcRequest
+			{
+				Password = password, 
+				Hash = request.Hash
+			}));
 
 			return Result(response?.IsSuccess);
 		}
