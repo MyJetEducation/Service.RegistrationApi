@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
 using Service.Authorization.Client.Services;
+using Service.Grpc;
 using Service.PasswordRecovery.Client;
 using Service.Registration.Client;
 using Service.UserInfo.Crud.Client;
@@ -12,14 +13,13 @@ namespace Service.RegistrationApi.Modules
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterUserInfoCrudClient(Program.Settings.UserInfoCrudServiceUrl);
-			
+			builder.RegisterUserInfoCrudClient(Program.Settings.UserInfoCrudServiceUrl, Program.LogFactory.CreateLogger(typeof(UserInfoCrudClientFactory)));
 			builder.RegisterRegistrationClient(Program.Settings.RegistrationServiceUrl, Program.LogFactory.CreateLogger(typeof(RegistrationClientFactory)));
 			builder.RegisterPasswordRecoveryClient(Program.Settings.PasswordRecoveryServiceUrl, Program.LogFactory.CreateLogger(typeof(PasswordRecoveryClientFactory)));
 
 			builder.Register(context =>
 				new TokenService(
-					context.Resolve<IUserInfoService>(),
+					context.Resolve<IGrpcServiceProxy<IUserInfoService>>(),
 					Program.Settings.JwtAudience,
 					Program.JwtSecret,
 					Program.Settings.JwtTokenExpireMinutes,

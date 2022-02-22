@@ -22,7 +22,7 @@ namespace Service.RegistrationApi.Controllers
 
 		public RecoveryController(
 			IGrpcServiceProxy<IPasswordRecoveryService> passwordRecoveryService,
-			IUserInfoService userInfoService) : base(userInfoService) =>
+			IGrpcServiceProxy<IUserInfoService> userInfoService) : base(userInfoService) =>
 				_passwordRecoveryService = passwordRecoveryService;
 
 		[HttpPost("recovery")]

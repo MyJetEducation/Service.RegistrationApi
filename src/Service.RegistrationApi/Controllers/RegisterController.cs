@@ -26,7 +26,7 @@ namespace Service.RegistrationApi.Controllers
 
 		public RegisterController(IGrpcServiceProxy<IRegistrationService> registrationService,
 			ITokenService tokenService,
-			IUserInfoService userInfoService) : base(userInfoService)
+			IGrpcServiceProxy<IUserInfoService> userInfoService) : base(userInfoService)
 		{
 			_registrationService = registrationService;
 			_tokenService = tokenService;
