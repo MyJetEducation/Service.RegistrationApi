@@ -21,6 +21,7 @@
     <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.1.7" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
     <PackageReference Include="MyJetEducation.Service.Grpc" Version="1.0.7" />
+    <PackageReference Include="SimpleTrading.Common" Version="1.0.32" />
   </ItemGroup>
 
   <ItemGroup>
