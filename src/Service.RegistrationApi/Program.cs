@@ -17,18 +17,22 @@ namespace Service.RegistrationApi
 	{
 		private const string JwtSecretName = "JWT_SECRET";
 		private const string SettingsFileName = ".myjeteducation";
+		private const string EncodingKeyStr = "ENCODING_KEY";
 
 		public static SettingsModel Settings { get; private set; }
-
 		public static ILoggerFactory LogFactory { get; private set; }
-
 		public static string JwtSecret { get; private set; }
+		public static string EncodingKey { get; set; }
+
+		public static Func<T> ReloadedSettings<T>(Func<SettingsModel, T> getter) => () => getter.Invoke(GetSettings());
+		public static SettingsModel GetSettings() => SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
 
 		public static void Main(string[] args)
 		{
 			Console.Title = "MyJetEducation Service.RegistrationApi";
 			LoadJwtSecret();
-			Settings = LoadSettings();
+			Settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
+			GetEnvVariables();
 
 			using ILoggerFactory loggerFactory = LogConfigurator.ConfigureElk("MyJetEducation", Settings.SeqServiceUrl, Settings.ElkLogs);
 			ILogger<Program> logger = loggerFactory.CreateLogger<Program>();
@@ -65,10 +69,6 @@ namespace Service.RegistrationApi
 				ShowError($"ERROR! Length of environment variable {JwtSecretName} must be greater or equal than 16 symbols!");
 		}
 
-		private static SettingsModel LoadSettings() => SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
-
-		public static Func<T> ReloadedSettings<T>(Func<SettingsModel, T> getter) => () => getter.Invoke(LoadSettings());
-
 		public static IHostBuilder CreateHostBuilder(ILoggerFactory loggerFactory, string[] args) =>
 			Host.CreateDefaultBuilder(args)
 				.UseServiceProviderFactory(new AutofacServiceProviderFactory())
@@ -93,5 +93,15 @@ namespace Service.RegistrationApi
 					services.AddSingleton(loggerFactory);
 					services.AddSingleton(typeof (ILogger<>), typeof (Logger<>));
 				});
+
+		private static void GetEnvVariables()
+		{
+			string key = Environment.GetEnvironmentVariable(EncodingKeyStr);
+
+			if (key.IsNullOrEmpty())
+				throw new Exception($"Env Variable {EncodingKeyStr} is not found");
+
+			EncodingKey = key;
+		}
 	}
 }
