@@ -77,7 +77,7 @@ namespace Service.RegistrationApi.Controllers
 			if (userName.IsNullOrEmpty())
 			{
 				await WaitFakeRequest();
-				return StatusResponse.Error();
+				return Unauthorized();
 			}
 
 			TokenInfo tokenInfo = await _tokenService.GenerateTokensAsync(userName, HttpContext.GetIp());
