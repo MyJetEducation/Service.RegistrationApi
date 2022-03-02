@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Grpc;
-using Service.RegistrationApi.Models;
 using Service.UserInfo.Crud.Grpc;
 using Service.UserInfo.Crud.Grpc.Models;
 
@@ -25,8 +24,6 @@ namespace Service.RegistrationApi.Controllers
 
 			await Task.Delay(timeoutSettings.Invoke());
 		}
-
-		protected static IActionResult Result(bool? isSuccess) => isSuccess == true ? StatusResponse.Ok() : StatusResponse.Error();
 
 		protected async ValueTask<Guid?> GetUserIdAsync(string userName)
 		{

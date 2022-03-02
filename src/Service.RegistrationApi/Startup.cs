@@ -7,22 +7,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyJetWallet.Sdk.Service;
 using Prometheus;
+using Service.Core.Client.Constants;
 using Service.RegistrationApi.Modules;
+using Service.Web;
 using SimpleTrading.ServiceStatusReporterConnector;
 
 namespace Service.RegistrationApi
 {
 	public class Startup
 	{
+		private const string DocumentName = "register";
+		private const string ApiName = "RegistrationApi";
+
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.BindCodeFirstGrpc();
 			services.AddHostedService<ApplicationLifetimeManager>();
-			services.AddMyTelemetry("ED-", Program.Settings.ZipkinUrl);
-			services.SetupSwaggerDocumentation();
+			services.AddMyTelemetry(Configuration.TelemetryPrefix, Program.Settings.ZipkinUrl);
+			services.SetupSwaggerDocumentation(DocumentName, ApiName);
 			services.ConfigurateHeaders();
 			services.AddControllers();
-			services.AddAuthentication(StartupUtils.ConfigureAuthenticationOptions)
-				.AddJwtBearer(StartupUtils.ConfigureJwtBearerOptions);
+			services.ConfigureAuthentication();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -39,12 +44,12 @@ namespace Service.RegistrationApi
 			app.UseOpenApi();
 			app.UseAuthentication();
 			app.UseAuthorization();
-			app.SetupSwagger();
+			app.SetupSwagger(DocumentName, ApiName);
 
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
-				endpoints.MapGet("/", async context => await context.Response.WriteAsync("MyJetEducation API endpoint"));
+				endpoints.MapGet("/", async context => await context.Response.WriteAsync("API endpoint"));
 			});
 		}
 

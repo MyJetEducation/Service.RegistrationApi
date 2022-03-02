@@ -12,6 +12,7 @@ using Service.PasswordRecovery.Grpc.Models;
 using Service.RegistrationApi.Constants;
 using Service.RegistrationApi.Models;
 using Service.UserInfo.Crud.Grpc;
+using Service.Web;
 
 namespace Service.RegistrationApi.Controllers
 {
@@ -43,7 +44,7 @@ namespace Service.RegistrationApi.Controllers
 
 			await WaitFakeRequest();
 
-			return Result(response?.IsSuccess);
+			return StatusResponse.Result(response);
 		}
 
 		[HttpPost("change")]
@@ -64,7 +65,7 @@ namespace Service.RegistrationApi.Controllers
 				Hash = request.Hash
 			}));
 
-			return Result(response?.IsSuccess);
+			return StatusResponse.Result(response);
 		}
 	}
 }

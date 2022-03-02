@@ -30,7 +30,7 @@ namespace Service.RegistrationApi.Modules
 					context.Resolve<IEncoderDecoder>(),
 					context.Resolve<ILogger<TokenService>>(),
 					context.Resolve<ISystemClock>(),
-					Program.Settings.JwtAudience,
+					Program.JwtAudience,
 					Program.JwtSecret,
 					Program.Settings.JwtTokenExpireMinutes,
 					Program.Settings.RefreshTokenExpireMinutes

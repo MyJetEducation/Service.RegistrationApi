@@ -14,6 +14,7 @@ using Service.Registration.Grpc.Models;
 using Service.RegistrationApi.Constants;
 using Service.RegistrationApi.Models;
 using Service.UserInfo.Crud.Grpc;
+using Service.Web;
 using SimpleTrading.ClientApi.Utils;
 
 namespace Service.RegistrationApi.Controllers
@@ -60,7 +61,7 @@ namespace Service.RegistrationApi.Controllers
 
 			await WaitFakeRequest();
 
-			return Result(response?.IsSuccess);
+			return StatusResponse.Result(response);
 		}
 
 		[HttpPost("confirm")]
