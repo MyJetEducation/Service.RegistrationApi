@@ -12,7 +12,7 @@
     <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.16" />
     <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.7" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.11" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.31" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.32" />
     <PackageReference Include="MyJetEducation.Service.UserInfo.Crud.Client" Version="1.0.17" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
