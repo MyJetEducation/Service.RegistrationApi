@@ -30,6 +30,12 @@ namespace Service.RegistrationApi.Controllers
 		[SwaggerResponse(HttpStatusCode.OK, typeof (StatusResponse), Description = "Ok")]
 		public async ValueTask<IActionResult> PasswordRecoveryAsync([FromBody, Required] string email)
 		{
+			if (!UserDataRequestValidator.ValidateLogin(email))
+			{
+				await WaitFakeRequest();
+				return StatusResponse.Ok();
+			}
+
 			Guid? userId = await GetUserIdAsync(email);
 			if (userId == null)
 			{

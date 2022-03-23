@@ -55,8 +55,8 @@ namespace Service.RegistrationApi.Controllers
 			{
 				UserName = request.UserName,
 				Password = request.Password,
-				FirstName = request.FirstName,
-				LastName = request.LastName
+				FirstName = request.FirstName.Trim(),
+				LastName = request.LastName.Trim()
 			}));
 
 			await WaitFakeRequest();
