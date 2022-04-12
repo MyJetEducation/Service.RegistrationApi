@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
     <PackageReference Include="MyJetEducation.Service.Authorization.Client" Version="1.0.20" />
     <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.7" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.11" />
